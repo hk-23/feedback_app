@@ -1,10 +1,14 @@
+import os
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY','justanormalsecretkeywithnomeaning')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///schools.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 
 class user(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
