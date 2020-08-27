@@ -17,5 +17,17 @@ db.create_all()
 def home():
 	return render_template('index.html')
 
+@app.route('/signup')
+def sigup():
+	return render_template('signup.html')
+
+@app.route('/login/<path:next>')
+def login():
+	pass
+
+@app.route('/logout')
+def logout():
+	pass
+
 if __name__ == '__main__':
 	app.run(debug=True)

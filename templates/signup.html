@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="container-fluid bg-info" style="height: 100vh">
+	<h1 class="text-center py-4">Signup Form</h1>
+
+	<form class="py-4 col-lg-5 col-md-8 card mx-auto shadow rounded-lg" id="signup-form">
+		<div class="col mx-auto form-group">
+			<label for="username">Username :</label>
+			<input type="text" name="username" class="form-control" id="uname" placeholder="Enter Username" required>
+			<div class="invalid-feedback">
+				This field is required
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<label for="password">Password :</label>
+			<input type="password" name="password" class="form-control" id="pass" placeholder="Enter Password" required>
+			<div class="invalid-feedback">
+				The Password must be atleast 6 characters
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<label for="c_password">Confirm Password :</label>
+			<input type="password" name="c_password" class="form-control" id="c-pass" placeholder="Retype Password" required>
+			<div class="invalid-feedback">
+				The password didn't match
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" name="agree" id="agree" class="custom-control-input" required>
+				<label class="custom-control-label" for="agree">I agree to the terms and conditions</label>
+				<span class="invalid-feedback">Check this to continue</span>
+			</div>
+		</div>
+		<div class="col">
+			<input type="submit" name="submit" class="btn btn-success" value="SignUp" id="signup">
+			<a href="#" class="mt-2 float-right">Already have an account!</a>
+		</div>
+	</form>
+</section>
+
+<script type="text/javascript">
+	var uname_validation = function(){
+		var uname = $('#uname');
+		if(!(uname.val().length>0)){
+			uname.removeClass('is-valid')
+			uname.addClass('is-invalid')
+			return false;
+		}
+		uname.removeClass('is-invalid')
+		uname.addClass('is-valid')
+		return true
+	}
+	var pass_validation = function(){
+		var pass = $('#pass');
+		if(!(pass.val().length>5)){
+			pass.removeClass('is-valid');
+			pass.addClass('is-invalid');
+			return false;
+		}
+		pass.removeClass('is-invalid');
+		pass.addClass('is-valid');
+		return true;
+	}
+	var c_pass_validation = function(){
+		var pass = $('#pass');
+		var c_pass = $('#c-pass');
+		if(pass.val()==c_pass.val() && pass_validation()){
+			c_pass.removeClass('is-invalid')
+			c_pass.addClass('is-valid')
+			return true;
+		}
+		else{
+			c_pass.removeClass('is-valid')
+			c_pass.addClass('is-invalid');
+			return false;
+		}
+	}
+	var agree_validation = function(){
+		var agree = $('#agree');
+		if(!(agree.prop('checked')==true)){
+			agree.removeClass('is-valid')
+			agree.addClass('is-invalid')
+			return false;
+		}
+		agree.removeClass('is-invalid')
+		agree.addClass('is-valid')
+		return true;
+	}
+	$(document).ready(function(){
+		$('#uname').change(uname_validation)
+		$('#c-pass').change(c_pass_validation);
+		$('#pass').change(function(){
+			pass_validation();
+			if($('#c-pass').val().length>0){
+				c_pass_validation();
+			}
+		});
+		$('#agree').click(function(){
+			agree_validation();
+		});
+
+		$('#signup').click(function(event){
+			var a = uname_validation();
+			var b = pass_validation();
+			var c = c_pass_validation();
+			var d =agree_validation();
+			if(!(a && b && c && d)){
+				event.preventDefault();
+			}
+
+		});
+	});
+</script>
+
+{% endblock %}
