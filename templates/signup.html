@@ -2,19 +2,20 @@
 
 {% block content %}
 
-<section class="container-fluid bg-info" style="height: 100vh">
-	<h1 class="text-center py-4">Signup Form</h1>
+<section class="container-fluid py-3 bg-info" style="min-height: 100vh">
+	<h1 class="text-center py-3">Signup Form</h1>
 
-	<form class="py-4 col-lg-5 col-md-8 card mx-auto shadow rounded-lg" id="signup-form">
+	<form method="POST" class="py-4 mt-3 col-lg-5 col-md-8 card mx-auto shadow rounded-lg" id="signup-form">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 		<div class="col mx-auto form-group">
-			<label for="username">Username :</label>
+			<label for="uname">Username :</label>
 			<input type="text" name="username" class="form-control" id="uname" placeholder="Enter Username" required>
 			<div class="invalid-feedback">
 				This field is required
 			</div>
 		</div>
 		<div class="col mx-auto form-group">
-			<label for="password">Password :</label>
+			<label for="pass">Password :</label>
 			<input type="password" name="password" class="form-control" id="pass" placeholder="Enter Password" required>
 			<div class="invalid-feedback">
 				The Password must be atleast 6 characters

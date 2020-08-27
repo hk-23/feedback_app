@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="container-fluid py-3 bg-light" style="min-height: 100vh">
+	<h1 class="text-center py-3">Vue Signup Form</h1>
+
+	<form class="py-4 mt-3 col-lg-5 col-md-8 card mx-auto shadow rounded-lg" id="signup-form">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+		<div class="col mx-auto form-group">
+			<label for="uname">Username :</label>
+			<input type="text" name="username" class="form-control" id="uname" placeholder="Enter Username" v-model="username.value" :class="[username.class]" required>
+			<div class="invalid-feedback">
+				{% raw %} {{ username.feedback }} {% endraw %}
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<label for="pass">Password :</label>
+			<input type="password" name="password" class="form-control" id="pass" placeholder="Enter Password" v-model="password.value" :class="[password.class]" required>
+			<div class="invalid-feedback">
+				{% raw %} {{ password.feedback }} {% endraw %}
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<label for="c_password">Confirm Password :</label>
+			<input type="password" name="c_password" class="form-control" id="c-pass" placeholder="Retype Password" v-model="c_password.value" :class="[c_password.class]" required>
+			<div class="invalid-feedback">
+				{% raw %} {{ c_password.feedback }} {% endraw %}
+			</div>
+		</div>
+		<div class="col mx-auto form-group">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" name="agree" id="agree" class="custom-control-input" v-model="agree.value" :class="[agree.class]" required>
+				<label class="custom-control-label" for="agree">I agree to the terms and conditions</label>
+				<span class="invalid-feedback">{% raw %} {{ agree.feedback }} {% endraw %}</span>
+			</div>
+		</div>
+		<div class="col">
+			<input type="submit" name="submit" class="btn btn-success" value="SignUp" id="signup" v-on:click="submit($event)">
+			<a href="#" class="mt-2 float-right">Already have an account!</a>
+		</div>
+	</form>
+</section>
+
+<script type="text/javascript">
+	// Vue.component('password',{
+	// 	data: function(){
+	// 		return {}
+	// 	},
+	// 	props: ['placeholder','class'],
+	// 	template: 
+	// 		'<div class="password">\
+	// 		<label for="pass">Password :</label>\
+	// 		<input type="password" name="password" class="form-control" id="pass" placeholder="Enter Password" v-model="password.value" :class[] required>\
+	// 		<div class="invalid-feedback">\
+	// 			{% raw %} {{ password.feedback }} {% endraw %}\
+	// 		</div>\
+	// 		</div>'
+	// })
+	var signup_app = new Vue({
+		el: '#signup-form',
+		data: {
+			'username':{
+				value:'',
+				class:null,
+				feedback: 'This Field is required',
+			},
+			'password': {
+				value:'',
+				class:null,
+				feedback: 'Password must be atleast 6 characters',
+			},
+			'c_password': {
+				value:'',
+				class:null,
+				feedback: 'Password mismatch',
+			},
+			'agree': {
+				value:'',
+				class:null,
+				feedback: 'This Field is required',
+			},
+		},
+		methods: {
+			validate : function(){
+				if(this.username.value.length>0){
+					this.username.class = 'is-valid';
+					var c1 = true;
+				}
+				else{
+					this.username.class = 'is-invalid';
+				}
+				if(this.password.value.length>=6){
+					this.password.class = 'is-valid';
+					var c2 = true;
+				}
+				else{
+					this.password.class = 'is-invalid';
+				}
+				if(this.c_password.value == this.password.value && this.c_password.value.length>=6){
+					this.c_password.class = 'is-valid';
+					var c3 =true;
+				}
+				else{
+					this.c_password.class = 'is-invalid';
+				}
+				if(this.agree.value==true){
+					this.agree.class = 'is-valid';
+					var c4 = true;
+				}
+				else{
+					this.agree.class = 'is-invalid';
+				}
+				if(!(c1 && c2 && c3 && c4)){
+					return true
+				}
+				else{
+					return false
+				}
+			},
+			submit : function(event){
+				if(this.validate()){
+					event.preventDefault()
+				}
+			}
+		},
+	});
+</script>
+
+<!-- <script type="text/javascript">
+	var uname_validation = function(){
+		var uname = $('#uname');
+		if(!(uname.val().length>0)){
+			uname.removeClass('is-valid')
+			uname.addClass('is-invalid')
+			return false;
+		}
+		uname.removeClass('is-invalid')
+		uname.addClass('is-valid')
+		return true
+	}
+	var pass_validation = function(){
+		var pass = $('#pass');
+		if(!(pass.val().length>5)){
+			pass.removeClass('is-valid');
+			pass.addClass('is-invalid');
+			return false;
+		}
+		pass.removeClass('is-invalid');
+		pass.addClass('is-valid');
+		return true;
+	}
+	var c_pass_validation = function(){
+		var pass = $('#pass');
+		var c_pass = $('#c-pass');
+		if(pass.val()==c_pass.val() && pass_validation()){
+			c_pass.removeClass('is-invalid')
+			c_pass.addClass('is-valid')
+			return true;
+		}
+		else{
+			c_pass.removeClass('is-valid')
+			c_pass.addClass('is-invalid');
+			return false;
+		}
+	}
+	var agree_validation = function(){
+		var agree = $('#agree');
+		if(!(agree.prop('checked')==true)){
+			agree.removeClass('is-valid')
+			agree.addClass('is-invalid')
+			return false;
+		}
+		agree.removeClass('is-invalid')
+		agree.addClass('is-valid')
+		return true;
+	}
+	$(document).ready(function(){
+		$('#uname').change(uname_validation)
+		$('#c-pass').change(c_pass_validation);
+		$('#pass').change(function(){
+			pass_validation();
+			if($('#c-pass').val().length>0){
+				c_pass_validation();
+			}
+		});
+		$('#agree').click(function(){
+			agree_validation();
+		});
+
+		$('#signup').click(function(event){
+			var a = uname_validation();
+			var b = pass_validation();
+			var c = c_pass_validation();
+			var d =agree_validation();
+			if(!(a && b && c && d)){
+				event.preventDefault();
+			}
+
+		});
+	});
+</script> -->
+
+{% endblock %}

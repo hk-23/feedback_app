@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="container">
+	<h2 class="text-center">Admin Page</h2>
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>Username</th>
+			<th>Password</th>
+		</tr>
+		{% for i in context.user_data %}
+		<tr>
+			<td>{{ i.id }}</td>
+			<td>{{ i.username }}</td>
+			<td>{{ i.password }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</section>
+
+{% endblock %}
