@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, render_template, redirect, url_for
+import json
+from flask import Flask, request, render_template, redirect, url_for,jsonify,make_response,abort,flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
@@ -34,7 +35,34 @@ def sigup():
 
 @app.route('/signup/vue',methods=['POST','GET'])
 def vue_signup():
-	return render_template('signup-vue.html')
+	if request.method=="POST":
+		username = request.form.get('username',0)
+		password = request.form.get('password',0)
+		if username and password:
+			if User.query.filter_by(username=username).first():
+				abort(404,description='username already exist')
+			user = User(username=username,password=password)
+			db.session.add(user)
+			db.session.commit()
+			flash('Signed In successfully')
+			return redirect(url_for('home'))
+		else:
+			abort(404,description='username or password not found')
+	return render_template('signup-vue.html',context=None)
+
+@app.route('/signup/username/check',methods=["POST"])
+def username_check():
+	if request.form.get('username',0):
+		print(User.query.filter_by(username=request.form.get('username')).first())
+		if User.query.filter_by(username=request.form.get('username')).first():
+			print('True')
+			return jsonify({'available':False})
+		else:
+			print('false')
+			return jsonify({'available':True})
+	else:
+		print('error')
+		return make_response(400)
 
 @app.route('/login/<path:next>')
 def login():
@@ -51,6 +79,10 @@ def admin():
 		'user_data': l,
 	}
 	return render_template('admin.html',context=context)
+
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html',e=e), 404
 
 if __name__ == '__main__':
 	app.run(debug=True)
